@@ -1,11 +1,11 @@
 function createNewDoc() {
-
-  var templateId = 'DOC_TEMPLATE_ID';
-
+  
+  var templateId = '[ DOC ID FOR RESPONSE TEMPLATE ]';
+  
   // Get active sheet in spreadsheet.
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
-
+  
   // Compile row data into iterable object
   var startRow = 2;  // First row of data to process
   var range = sheet.getDataRange();
@@ -13,20 +13,21 @@ function createNewDoc() {
   var numCols = range.getNumColumns();
   var dataRange = sheet.getRange(startRow, 1, numRows, numCols );
   var data = dataRange.getValues();
-
-  // Iterate over row data and place in variables. Variables are specific to the prior use case, but should be adjusted based on the number of columns/responses in the form
-
+  
+  
+  // Iterate over row data and place in variables
+  
   for (i in data) {
     var row = data[i];
-    var timestamp = Utilities.formatDate(row[0], 'EST', 'd MMMM, yyyy');
+    var timestamp = Utilities.formatDate(row[0], 'America/New_York', 'd MMMM, yyyy');
     var username = row[1];
     var title = row[2];
     var requestCategory = row[3];
     var requestType = row[4];
     var city = row[5];
     var effectiveDate = row[6];
-    var startTime = Utilities.formatDate(row[7], 'EST', 'hh:mm a');
-    var endTime = Utilities.formatDate(row[8], 'EST', 'hh:mm a');
+    var startTime = Utilities.formatDate(row[7], 'America/New_York', 'hh:mm a');
+    var endTime = Utilities.formatDate(row[8], 'America/New_York', 'hh:mm a');
     var locationName = row[9];
     var locationAddress = row[10];
     var memberCost = row[11];
@@ -43,14 +44,17 @@ function createNewDoc() {
     var buildingName = row[22];
     var externalCta = row[23];
     var publishChannels = row[24];
-
+    
+    var internalStakeholders = [stakeholderEmail + "," + username];
+   
+  
    // Create new Document and add editor permissions for someone.
-   var folder = DriveApp.getFolderById('FOLDER_ID');
-   var newDoc = DriveApp.getFileById(templateId).makeCopy(Utilities.formatDate(effectiveDate,'EST','yyyy.MM.dd') + "_" + city + "_" + title, folder);
+   var folder = DriveApp.getFolderById('[ FOLDER ID ]');
+   var newDoc = DriveApp.getFileById(templateId).makeCopy(Utilities.formatDate(effectiveDate,'America/New_York','yyyy.MM.dd') + "_" + city + "_" + title, folder);
    var newDocId = newDoc.getId();
-   newDoc.addEditors(['EMAILS']);
+   newDoc.addEditors(['ADD EDITOR EMAILS HERE']);
    newDoc.addCommenter(username);
-
+   
    // Replace placeholder text in template copy with spreadsheet values.
    var doc = DocumentApp.openById(newDocId);
    var body = doc.getActiveSection();
@@ -60,7 +64,7 @@ function createNewDoc() {
    body.replaceText('{{ Request Category }}',requestCategory);
    body.replaceText('{{ Request Type }}',requestType);
    body.replaceText('{{ City }}',city);
-   body.replaceText('{{ Effective Date }}',Utilities.formatDate(effectiveDate, 'EST', 'MM/dd/yyyy'));
+   body.replaceText('{{ Effective Date }}',Utilities.formatDate(effectiveDate, 'America/New_York', 'MM/dd/yyyy'));
    body.replaceText('{{ Start Time }}',startTime);
    body.replaceText('{{ End Time }}',endTime);
    body.replaceText('{{ Location Name }}',locationName);
